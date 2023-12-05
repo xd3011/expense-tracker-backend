@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-import Home from "../models/Home";
 
 const middlewareController = {
     verifyToken(req, res, next) {
@@ -27,40 +26,6 @@ const middlewareController = {
                 return res.status(404).json("UserId is not you");
             }
         })
-    },
-
-    verifyTokenAndOwnerAuthOrIsUser(req, res, next) {
-        middlewareController.verifyToken(req, res, () => {
-            Home.findById(req.params.hid)
-                .then((home) => {
-                    if (home.owner == req.user.id || req.body.id == req.user.id) {
-                        next();
-                    }
-                    else {
-                        return res.status(403).json("You are not the owner of this house");
-                    }
-                })
-                .catch(err => {
-                    return res.status(403).json("HomeId not found");
-                })
-        })
-    },
-
-    verifyTokenAndOwnerAuth(req, res, next) {
-        middlewareController.verifyToken(req, res, () => {
-            Home.findById(req.params.hid)
-                .then((home) => {
-                    if (home.owner == req.user.uid) {
-                        next();
-                    }
-                    else {
-                        return res.status(403).json("You are not the owner of this house");
-                    }
-                })
-                .catch(err => {
-                    return res.status(403).json("HomeId not found");
-                })
-        });
     },
 };
 

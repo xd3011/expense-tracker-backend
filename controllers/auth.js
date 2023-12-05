@@ -176,9 +176,46 @@ const authController = {
                 error: "Invalid email"
             })
         }
-        else {
-            // Send confirm to email and update password.
-        }
+        const id = user._id;
+        return res.status(200).json(id);
+    },
+
+    async getUserProfile(req, res) {
+        User.findOne({ _id: req.params.uid })
+            .then((user) => {
+                if (user) {
+                    const profileUser = new User({
+                        email: user.email,
+                        phone_number: user.phone_number,
+                        nickname: user.nickname,
+                    })
+                    return res.status(200).json(profileUser);
+                } else {
+                    return res.status(404).json({
+                        errCode: 1,
+                        errMessaging: "Not found"
+                    });
+                }
+            })
+            .catch(next);
+    },
+
+    async editUserProfile(req, res) {
+        User.updateOne({ _id: req.params.uid }, req.body)
+            .then((user) => {
+                if (user) {
+                    return res.status(200).json({
+                        errCode: 0,
+                        errMessaging: "Successfully Update"
+                    });
+                } else {
+                    return res.status(404).json({
+                        errCode: 1,
+                        errMessaging: "Not found"
+                    });
+                }
+            })
+            .catch(next);
     }
 };
 
