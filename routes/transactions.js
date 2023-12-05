@@ -16,6 +16,6 @@ router.post('/:uid/add-income', middlewareController.verifyTokenAndCheckIsUser, 
     .post('/register', authController.register)
     .put('/editpassword/:uid', authController.editPassword)
     .post('/logout', authController.logout)
-    .post('/forgotpasword', authController.generateRefreshTokenforgotPassword)
+    .post('/forgotpasword', authController.forgotPassword)
 
 module.exports = router
