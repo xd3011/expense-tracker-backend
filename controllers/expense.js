@@ -37,7 +37,7 @@ exports.addExpense = async (req, res) => {
 exports.getExpense = async (req, res) => {
     await ExpenseSchema.find({ user_id: req.params.uid })
         .then((expense) => {
-            const expenses = expense.sort({ createdAt: -1 })
+            const expenses = expense.sort((a, b) => b.createdAt - a.createdAt);
             res.status(200).json(expenses)
         })
         .catch((error) => {

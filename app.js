@@ -1,12 +1,15 @@
 const express = require('express')
 const cors = require('cors');
 const { db } = require('./db/db');
-const {readdirSync} = require('fs')
+const { readdirSync } = require('fs')
+const cookieParser = require("cookie-parser");
 const app = express()
 
 require('dotenv').config()
 
 const PORT = process.env.PORT
+
+app.use(cookieParser());
 
 //middlewares
 app.use(express.json())

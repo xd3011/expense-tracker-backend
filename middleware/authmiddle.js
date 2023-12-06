@@ -17,8 +17,6 @@ const middlewareController = {
     },
     verifyTokenAndCheckIsUser(req, res, next) {
         middlewareController.verifyToken(req, res, () => {
-            console.log(req.user);
-            console.log(req.params.uid);
             if (req.user.uid == req.params.uid) {
                 next();
             }
