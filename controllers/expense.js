@@ -1,6 +1,5 @@
 const ExpenseSchema = require("../models/ExpenseModel");
 
-
 exports.addExpense = async (req, res) => {
     const user_id = req.params.uid;
     const { title, amount, category, description, date } = req.body

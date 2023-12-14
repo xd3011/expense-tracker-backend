@@ -187,6 +187,33 @@ const authController = {
         return res.status(200).json(id);
     },
 
+    // PUT localhost:[port]/api/v1/editpassword/:uid
+    async forgotPasswordNext(req, res) {
+        const user = await User.findOne({ _id: req.params.uid });
+        if (!user) {
+            return res.status(404).json({
+                error: "Invalid ID",
+            });
+        }
+        try {
+            try {
+                const salt = await bcrypt.genSalt(10);
+                const hashed = await bcrypt.hash(req.body.newPassword, salt);
+                user.password = hashed;
+                user.save();
+                res.status(200).json("Update Successfully");
+            } catch (error) {
+                return res.status(500).json({
+                    error: "User save error",
+                });
+            }
+        } catch (error) {
+            return res.status(500).json({
+                error: "Bcrypt error",
+            });
+        }
+    },
+
     async getUserProfile(req, res) {
         User.findOne({ _id: req.params.uid })
             .then((user) => {
@@ -195,6 +222,9 @@ const authController = {
                         email: user.email,
                         phone_number: user.phone_number,
                         nickname: user.nickname,
+                        spending_limit_day: spending_limit_day,
+                        spending_limit_month: spending_limit_month,
+                        spending_limit_year: spending_limit_year
                     })
                     return res.status(200).json(profileUser);
                 } else {
@@ -223,6 +253,18 @@ const authController = {
                 }
             })
             .catch(next);
+    },
+
+    async editPictureUserProfile(req, res) {
+        User.find({ user_id: req.params.uid })
+            .then((user) => {
+                user.image = req.body.image;
+                user.save();
+                return res.status(200).json("Edit Image User Successfully!");
+            })
+            .catch((error) => {
+                res.status(500).json({ message: 'Server Error' })
+            })
     }
 };
 

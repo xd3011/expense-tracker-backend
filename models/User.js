@@ -9,6 +9,10 @@ const User = new Schema(
         user_name: { type: String, required: true },
         password: { type: String, required: true },
         nickname: { type: String, required: true },
+        spending_limit_day: { type: String, require: true },
+        spending_limit_month: { type: String, require: true },
+        spending_limit_year: { type: String, require: true },
+        image: { type: String }
     },
     {
         timestamps: true,
