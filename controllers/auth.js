@@ -18,7 +18,7 @@ const authController = {
                 password: hashed,
                 nickname: req.body.nickname,
             });
-            console.log(newUser);
+            // console.log(newUser);
             // Save new User
             newUser.save();
             res.status(200).send("Successfully");
