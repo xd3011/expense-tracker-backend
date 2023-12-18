@@ -215,29 +215,35 @@ const authController = {
     },
 
     async getUserProfile(req, res) {
-        User.findOne({ _id: req.params.uid })
-            .then((user) => {
-                if (user) {
-                    const profileUser = new User({
-                        email: user.email,
-                        phone_number: user.phone_number,
-                        nickname: user.nickname,
-                        spending_limit_day: spending_limit_day,
-                        spending_limit_month: spending_limit_month,
-                        spending_limit_year: spending_limit_year
-                    })
-                    return res.status(200).json(profileUser);
-                } else {
-                    return res.status(404).json({
-                        errCode: 1,
-                        errMessaging: "Not found"
-                    });
-                }
-            })
-            .catch((err) => {
-                return res.status(500).json("Server error: ", err);
+        try {
+            const user = await User.findOne({ _id: req.params.uid });
+    
+            if (user) {
+                const profileUser = {
+                    email: user.email,
+                    phone_number: user.phone_number,
+                    nickname: user.nickname,
+                    spending_limit_day: user.spending_limit_day,
+                    spending_limit_month: user.spending_limit_month,
+                    spending_limit_year: user.spending_limit_year
+                };
+    
+                return res.status(200).json(profileUser);
+            } else {
+                return res.status(404).json({
+                    errCode: 1,
+                    errMessaging: "Not found"
+                });
+            }
+        } catch (err) {
+            console.error("Server error: ", err);
+            return res.status(500).json({
+                errCode: 2,
+                errMessaging: "Server error"
             });
+        }
     },
+    
 
     async editUserProfile(req, res) {
         User.updateOne({ _id: req.params.uid }, req.body)
