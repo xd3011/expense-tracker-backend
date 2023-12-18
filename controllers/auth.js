@@ -234,7 +234,9 @@ const authController = {
                     });
                 }
             })
-            .catch(next);
+            .catch((err) => {
+                return res.status(500).json("Server error: ", err);
+            });
     },
 
     async editUserProfile(req, res) {
