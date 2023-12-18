@@ -223,6 +223,7 @@ const authController = {
                     email: user.email,
                     phone_number: user.phone_number,
                     nickname: user.nickname,
+                    user_name: user.user_name,
                     spending_limit_day: user.spending_limit_day,
                     spending_limit_month: user.spending_limit_month,
                     spending_limit_year: user.spending_limit_year
@@ -245,23 +246,27 @@ const authController = {
     },
     
 
-    async editUserProfile(req, res) {
-        User.updateOne({ _id: req.params.uid }, req.body)
-            .then((user) => {
-                if (user) {
-                    return res.status(200).json({
-                        errCode: 0,
-                        errMessaging: "Successfully Update"
-                    });
-                } else {
-                    return res.status(404).json({
-                        errCode: 1,
-                        errMessaging: "Not found"
-                    });
-                }
-            })
-            .catch(next);
+    async editUserProfile(req, res, next) {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(req.params.uid, req.body, { new: true });
+    
+            if (updatedUser) {
+                return res.status(200).json({
+                    errCode: 0,
+                    errMessaging: "Successfully updated",
+                    user: updatedUser,
+                });
+            } else {
+                return res.status(404).json({
+                    errCode: 1,
+                    errMessaging: "Not found",
+                });
+            }
+        } catch (error) {
+            next(error); // Pass the error to the next middleware
+        }
     },
+    
 
     async editPictureUserProfile(req, res) {
         User.find({ user_id: req.params.uid })
