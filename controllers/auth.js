@@ -37,7 +37,7 @@ const authController = {
             },
             process.env.JWT_ACCESS_KEY,
             {
-                expiresIn: 60 * 30, // 30 minute
+                expiresIn: 60 * 1440, // 1 day
             }
         );
         return accessToken;
