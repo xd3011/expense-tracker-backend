@@ -4,6 +4,7 @@ const { db } = require('./db/db');
 const { readdirSync } = require('fs')
 const cookieParser = require("cookie-parser");
 const app = express()
+const send = require('./config/send_notification');
 
 require('dotenv').config()
 

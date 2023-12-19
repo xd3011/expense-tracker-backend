@@ -235,7 +235,7 @@ const authController = {
                 }
             })
             .catch((err) => {
-                return res.status(500).json("Server error: ", err);
+                return res.status(500).json(err);
             });
     },
 
@@ -258,7 +258,7 @@ const authController = {
     },
 
     async editPictureUserProfile(req, res) {
-        User.find({ user_id: req.params.uid })
+        User.find({ _id: req.params.uid })
             .then((user) => {
                 user.image = req.body.image;
                 user.save();
