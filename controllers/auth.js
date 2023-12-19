@@ -18,7 +18,7 @@ const authController = {
                 password: hashed,
                 nickname: req.body.nickname,
             });
-            console.log(newUser);
+            // console.log(newUser);
             // Save new User
             newUser.save();
             res.status(200).send("Successfully");
@@ -215,47 +215,58 @@ const authController = {
     },
 
     async getUserProfile(req, res) {
-        User.findOne({ _id: req.params.uid })
-            .then((user) => {
-                if (user) {
-                    const profileUser = new User({
-                        email: user.email,
-                        phone_number: user.phone_number,
-                        nickname: user.nickname,
-                        spending_limit_day: spending_limit_day,
-                        spending_limit_month: spending_limit_month,
-                        spending_limit_year: spending_limit_year
-                    })
-                    return res.status(200).json(profileUser);
-                } else {
-                    return res.status(404).json({
-                        errCode: 1,
-                        errMessaging: "Not found"
-                    });
-                }
-            })
-            .catch((err) => {
-                return res.status(500).json(err);
+        try {
+            const user = await User.findOne({ _id: req.params.uid });
+
+            if (user) {
+                const profileUser = {
+                    email: user.email,
+                    phone_number: user.phone_number,
+                    nickname: user.nickname,
+                    user_name: user.user_name,
+                    spending_limit_day: user.spending_limit_day,
+                    spending_limit_month: user.spending_limit_month,
+                    spending_limit_year: user.spending_limit_year
+                };
+
+                return res.status(200).json(profileUser);
+            } else {
+                return res.status(404).json({
+                    errCode: 1,
+                    errMessaging: "Not found"
+                });
+            }
+        } catch (err) {
+            console.error("Server error: ", err);
+            return res.status(500).json({
+                errCode: 2,
+                errMessaging: "Server error"
             });
+        }
     },
 
-    async editUserProfile(req, res) {
-        User.updateOne({ _id: req.params.uid }, req.body)
-            .then((user) => {
-                if (user) {
-                    return res.status(200).json({
-                        errCode: 0,
-                        errMessaging: "Successfully Update"
-                    });
-                } else {
-                    return res.status(404).json({
-                        errCode: 1,
-                        errMessaging: "Not found"
-                    });
-                }
-            })
-            .catch(next);
+
+    async editUserProfile(req, res, next) {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(req.params.uid, req.body, { new: true });
+
+            if (updatedUser) {
+                return res.status(200).json({
+                    errCode: 0,
+                    errMessaging: "Successfully updated",
+                    user: updatedUser,
+                });
+            } else {
+                return res.status(404).json({
+                    errCode: 1,
+                    errMessaging: "Not found",
+                });
+            }
+        } catch (error) {
+            next(error); // Pass the error to the next middleware
+        }
     },
+
 
     async editPictureUserProfile(req, res) {
         User.find({ _id: req.params.uid })
