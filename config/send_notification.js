@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const User = require("../models/User");
 const ExpenseSchema = require("../models/ExpenseModel");
+const path = require("path");
 
 let mailOptions = [];
 
@@ -15,7 +16,9 @@ const mailSend = (listUser) => {
             to: e.email,
             subject: 'Notification From Expense Tracker',
             text: 'Some content to send',
-            html: '<b>Hello, today there are no transactions recorded, do you want to record them?</b>'
+            html: {
+                path: path.resolve(__dirname, "../public/template/mail.html"),
+            },
         })
     })
     transporter = nodemailer.createTransport({
