@@ -30,7 +30,7 @@ const mailSend = (listUser) => {
     });
 }
 
-const send = cron.schedule('* * * * *', function () {
+const send = cron.schedule('* 11 * * *', function () {
     const today = new Date();
     console.log('---------------------');
     console.log('Running Cron Process');
